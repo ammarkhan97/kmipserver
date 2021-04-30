@@ -23,15 +23,29 @@ public class KmipController {
     @PostMapping("/activate")
     public String activate(String uid)
     {
-        String returnVal = "uid: "+ uid +"\n";
+        String returnVal;
+        if()
+        {
+            returnVal = "uid: "+ uid + "\n";
+        } else
+        {
+            returnVal = "uid not found\n";
+        }
         return returnVal;
     }
 
     //Used to add an attribute to an object
     @PostMapping("/addAttribute")
-    public String addAttribute(String uid, String attribute)
+    public String addAttribute(String uid, String attribute, String value)
     { 
-        String returnVal = "uid: "+ uid +"\n";
+        String returnVal;
+        if()
+        {
+            returnVal = "uid: "+ uid + "\n";
+        } else
+        {
+            returnVal = "uid not found\n";
+        }
         return returnVal;
     }
 
@@ -39,7 +53,14 @@ public class KmipController {
     @GetMapping("/check")
     public String check(String uid)
     {
-        String returnVal = "uid: "+ uid + "\n"
+        String returnVal;
+        if()
+        {
+            returnVal = "uid: "+ uid + "\n";
+        } else
+        {
+            returnVal = "uid not found\n";
+        }
         return returnVal;
     }
 
@@ -75,7 +96,20 @@ public class KmipController {
     @PostMapping("/deleteAttribute")
     public String delete(String uid, String attribute)
     {
-        String returnVal = "uid: "+ uid + "\n"
+        String returnVal;
+        if()
+        {
+            if() //find attribute
+            {
+                returnVal = "uid: "+ uid + "\n";
+            } else
+            {
+                returnVal = "no such attribute\n";
+            }
+        } else
+        {
+            returnVal = "uid not found\n";
+        }
         return returnVal;
     }
 
@@ -83,7 +117,14 @@ public class KmipController {
     @PostMapping("/destroy")
     public String destroy(String uid)
     {
-        String returnVal = "uid: "+ uid + "\n"
+        String returnVal;
+        if()
+        {
+            returnVal = "uid: "+ uid + "\n";
+        } else
+        {
+            returnVal = "uid not found\n";
+        }
         return returnVal;
     }
 
@@ -103,7 +144,14 @@ public class KmipController {
     //Used for retrieving an object's value given the identifier
     @GetMapping("/get")
     public String get(String uid) {
-        String returnVal = "Object Type: "+ objType +"\nuid: "+ uid +" \nObject(s): ";
+        String returnVal;
+        if()
+        {
+            returnVal = "Object Type: "+ objType +"\nuid: "+ uid + "\nObjects(S): ";
+        } else
+        {
+            returnVal = "uid not found\n";
+        }
         return returnVal;
     }
 
@@ -111,7 +159,21 @@ public class KmipController {
     @GetMapping("/getAttributes")
     public String getAttributes(String[] attributes, String uid)
     {
-        String returnVal = "uid: "+ uid + "\nAttributes: ";
+        String returnVal;
+        if()
+        {   
+            returnVal = "Attributes: ";
+            for()
+            {
+                if()
+                {
+                    returnVal += "";
+                }
+            }
+        } else
+        {
+            returnVal = "uid not found\n";
+        }
         return returnVal;
     }
 
@@ -119,7 +181,18 @@ public class KmipController {
     @GetMapping("/getAttributeList")
     public String getAttributeList(String uid)
     {
-        String returnVal = "Attributes: ";
+        String returnVal;
+        if()
+        {
+            returnVal = "Attributes: "
+            for()
+            {
+                returnVal += "";
+            }
+        } else
+        {
+            returnVal = "uid not found\n";
+        }
         return returnVal;
     }
 
@@ -128,6 +201,21 @@ public class KmipController {
     public String locate(String attribute)
     {
         String returnVal = "uid(s): ";
+        for()
+        {
+            if()
+            {
+                if(returnVal.length() == 0)
+                {
+                    returnVal = "uid(s): ";
+                }
+                returnVal += uid + ", ";
+            }
+        }
+        if(returnVal.length() == 0)
+        {
+            returnVal = "None found\n";
+        }
         return returnVal;
     }
 
@@ -135,7 +223,20 @@ public class KmipController {
     @PostMapping("/modifyAttribute")
     public String modifyAttribute(String uid, String attribute, String value)
     {
-        String returnVal = "uid: "+ uid + "\n"
+        String returnVal;
+        if()
+        {
+            if() //if object has attribute
+            {
+                returnVal = "uid: "+ uid + "\n";
+            } else
+            {
+                returnVal = "no such attribute\n";
+            }
+        } else
+        {
+            returnVal = "uid not found\n";
+        }
         return returnVal;
     }
 
@@ -157,7 +258,14 @@ public class KmipController {
     @PostMapping("/setAttribute")
     public String setAttribute(String uid, String attribute, String value)
     {
-        String returnVal = "uid: "+ uid +"\n"
+        String returnVal;
+        if()
+        {
+            returnVal = "uid: "+ uid + "\n";
+        } else
+        {
+            returnVal = "uid not found\n";
+        }
         return returnVal;
     }
 }
