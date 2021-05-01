@@ -7,6 +7,8 @@ import com.amazonaws.services.kms.AWSKMS;
 import com.amazonaws.services.kms.AWSKMSClient;
 import com.amazonaws.services.kms.AWSKMSClientBuilder;
 
+import kmip.aws.kmipserver.objects.Credentials;
+
 public class KmsClientBuilder {
 
     public AWSKMS buildKmsClient(){
