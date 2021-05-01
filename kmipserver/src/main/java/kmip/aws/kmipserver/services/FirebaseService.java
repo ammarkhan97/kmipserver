@@ -1,8 +1,6 @@
 package kmip.aws.kmipserver.services;
 
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
