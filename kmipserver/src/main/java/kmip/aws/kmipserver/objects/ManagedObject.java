@@ -2,6 +2,8 @@ package kmip.aws.kmipserver.objects;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,16 +14,18 @@ public class ManagedObject {
     private String awsKeyId;
     private String keyType;
     private String region;
+    private Attributes attributes;
 
     public ManagedObject (){
         super();
     }
 
-    public ManagedObject (String awsKeyArn, String awsKeyId, String keyType, String region){
+    public ManagedObject (String awsKeyArn, String awsKeyId, String keyType, String region, Attributes attributes){
         this.setAwsKeyArn(awsKeyArn);
         this.setAwsKeyId(awsKeyId);
         this.setKeyType(keyType);
         this.setRegion(region);
+        this.attributes = attributes;
         setId(UUID.randomUUID().toString());
     }
 
@@ -63,6 +67,14 @@ public class ManagedObject {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Attributes getAttributes(){
+        return attributes;
+    }
+
+    public void setAttributes(Attributes attributes) {
+        this.attributes = attributes;
     }
 
     @Override
