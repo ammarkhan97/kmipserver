@@ -1,6 +1,11 @@
 package kmip.aws.kmipserver.objects;
 
 import java.util.UUID;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -74,6 +79,12 @@ public class ManagedObject {
         this.attributes = attributes;
     }
 
+    public String getAttributesJson(){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(attributes);
+        
+    }
+
     @Override
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder("{\n");
@@ -82,6 +93,7 @@ public class ManagedObject {
         stringBuilder.append("\n\tawsKeyId: " + awsKeyId);
         stringBuilder.append("\n\tkeyType: " + keyType);
         stringBuilder.append("\n\tRegion: " + region);
+        stringBuilder.append("\n\tAttributes: " + getAttributesJson());
         stringBuilder.append("\n}");
 
         return stringBuilder.toString();

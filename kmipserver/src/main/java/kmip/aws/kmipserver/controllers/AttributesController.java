@@ -42,13 +42,13 @@ public class AttributesController {
         if(true)
         {   
             returnVal = "Attributes: ";
-            for(true)
-            {
-                if()
-                {
-                    returnVal += "";
-                }
-            }
+            // for(true)
+            // {
+            //     if()
+            //     {
+            //         returnVal += "";
+            //     }
+            // }
         } else
         {
             returnVal = "uid not found\n";
@@ -112,9 +112,9 @@ public class AttributesController {
     public String modifyAttribute(String uid, String attribute, String value)
     {
         String returnVal;
-        if()
+        if(true)
         {
-            if() //if object has attribute
+            if(true) //if object has attribute
             {
                 returnVal = "uid: "+ uid + "\n";
             } else

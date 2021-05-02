@@ -8,6 +8,7 @@ import com.amazonaws.services.kms.AWSKMS;
 import com.amazonaws.services.kms.model.CreateKeyRequest;
 import com.amazonaws.services.kms.model.CreateKeyResult;
 import com.amazonaws.services.kms.model.EncryptRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -145,7 +146,7 @@ public class KmipController {
 
     //Used for retrieving an object's value given the identifier
     @GetMapping("/get")
-    public String get(@RequestHeader String uid) throws InterruptedException, ExecutionException {
+    public String get(@RequestHeader String uid) throws InterruptedException, ExecutionException, JsonProcessingException {
         ManagedObject managedObject = firebaseService.getManagedObject(uid);
         if(managedObject != null)
         {
