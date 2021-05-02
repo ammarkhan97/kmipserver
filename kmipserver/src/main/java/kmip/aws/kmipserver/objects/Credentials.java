@@ -2,8 +2,8 @@ package kmip.aws.kmipserver.objects;
 
 public class Credentials {
 
-    private String accessKeyId = "AKIAX4TDVXIOAEKOWPAV";
-    private String secretAccessKey = "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";
+    private String accessKeyId = "";
+    private String secretAccessKey = "";
     
     public String getAccessKeyId() {
         return accessKeyId;
