@@ -76,6 +76,29 @@ public class AttributesController {
         return couldNotFindUuid + uid;
     }
 
+    //Used to add or modify an attribute
+    @PostMapping("/setAttribute")
+    public String setAttribute(@RequestHeader String uid, 
+                               @RequestHeader String attribute,
+                               @RequestHeader String value) throws InterruptedException, ExecutionException, IllegalAccessException, InvocationTargetException
+    {
+        ManagedObject managedObject = firebaseService.getManagedObject(uid);
+        if(managedObject != null)
+        {
+            Attributes attributes = managedObject.getAttributes();
+            if(attributes.listAttributes().contains(attribute)){
+                BeanUtils.setProperty(attributes, attribute, value);
+                managedObject.setAttributes(attributes);   
+                return firebaseService.saveManagedObject(managedObject);            
+            }
+
+            return "Attribute " + attribute + " not supported for object " + uid;
+
+        }
+
+        return couldNotFindUuid + uid;
+    }
+    
     //Used to delete an attribute
     @PostMapping("/deleteAttribute")
     public String delete(String uid, String attribute)
@@ -90,21 +113,6 @@ public class AttributesController {
             {
                 returnVal = "no such attribute\n";
             }
-        } else
-        {
-            returnVal = "uid not found\n";
-        }
-        return returnVal;
-    }
-
-    //Used to add or modify an attribute
-    @PostMapping("/setAttribute")
-    public String setAttribute(String uid, String attribute, String value)
-    {
-        String returnVal;
-        if(true)
-        {
-            returnVal = "uid: "+ uid + "\n";
         } else
         {
             returnVal = "uid not found\n";
