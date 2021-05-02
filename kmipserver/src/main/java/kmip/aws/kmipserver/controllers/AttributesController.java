@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 import com.amazonaws.services.kms.AWSKMS;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -100,44 +101,47 @@ public class AttributesController {
     }
     
     //Used to delete an attribute
-    @PostMapping("/deleteAttribute")
-    public String delete(String uid, String attribute)
+    @DeleteMapping("/deleteAttribute")
+    public String delete(@RequestHeader String uid,
+                         @RequestHeader String attribute) throws InterruptedException, ExecutionException, IllegalAccessException, InvocationTargetException
     {
-        String returnVal;
-        if(true)
+        ManagedObject managedObject = firebaseService.getManagedObject(uid);
+        if(managedObject != null)
         {
-            if(true) //find attribute
-            {
-                returnVal = "uid: "+ uid + "\n";
-            } else
-            {
-                returnVal = "no such attribute\n";
+            Attributes attributes = managedObject.getAttributes();
+            if(attributes.listAttributes().contains(attribute)){
+                BeanUtils.setProperty(attributes, attribute, null);
+                managedObject.setAttributes(attributes);   
+                return firebaseService.saveManagedObject(managedObject);            
             }
-        } else
-        {
-            returnVal = "uid not found\n";
+
+            return "Attribute " + attribute + " not supported for object " + uid;
+
         }
-        return returnVal;
+
+        return couldNotFindUuid + uid;
     }
 
     //Used to modify an attribute
     @PostMapping("/modifyAttribute")
-    public String modifyAttribute(String uid, String attribute, String value)
+    public String modifyAttribute(@RequestHeader String uid,
+                                  @RequestHeader String attribute,
+                                  @RequestHeader String value) throws InterruptedException, ExecutionException, IllegalAccessException, InvocationTargetException
     {
-        String returnVal;
-        if(true)
+        ManagedObject managedObject = firebaseService.getManagedObject(uid);
+        if(managedObject != null)
         {
-            if(true) //if object has attribute
-            {
-                returnVal = "uid: "+ uid + "\n";
-            } else
-            {
-                returnVal = "no such attribute\n";
+            Attributes attributes = managedObject.getAttributes();
+            if(attributes.listAttributes().contains(attribute)){
+                BeanUtils.setProperty(attributes, attribute, value);
+                managedObject.setAttributes(attributes);   
+                return firebaseService.saveManagedObject(managedObject);            
             }
-        } else
-        {
-            returnVal = "uid not found\n";
+
+            return "Attribute " + attribute + " not supported for object " + uid;
+
         }
-        return returnVal;
+
+        return couldNotFindUuid + uid;
     }
 }
