@@ -104,12 +104,12 @@ public class KmipController {
     //Used for encrypting given data with given key
     @GetMapping("/encrypt")
     public String encrypt(@RequestHeader String uid, 
-                          @RequestHeader String data) throws InterruptedException, ExecutionException {
+                          @RequestHeader String plaintext) throws InterruptedException, ExecutionException {
         
         ManagedObject managedObject = firebaseService.getManagedObject(uid);
         EncryptRequest request = new EncryptRequest()
                                     .withKeyId(managedObject.getAwsKeyId())
-                                    .withPlaintext(ByteBuffer.wrap(data.getBytes()));
+                                    .withPlaintext(ByteBuffer.wrap(plaintext.getBytes()));
 
         EncryptResult result = kmsClient.encrypt(request);
 
@@ -122,11 +122,13 @@ public class KmipController {
     //Used for decrypting given data with given key
     @GetMapping("/decrypt")
     public String decrypt(@RequestHeader String uid,
-                          @RequestHeader String cipherText) {
+                          @RequestHeader String cipherText) throws InterruptedException, ExecutionException {
 
+        ManagedObject managedObject = firebaseService.getManagedObject(uid);
         byte[] cipherTextByteArray = Base64.getDecoder().decode(cipherText);
 
         DecryptRequest decryptRequest = new DecryptRequest()
+                                            .withKeyId(managedObject.getAwsKeyId())
                                             .withCiphertextBlob(ByteBuffer.wrap(cipherTextByteArray));
                             
         DecryptResult decryptResult = kmsClient.decrypt(decryptRequest);
