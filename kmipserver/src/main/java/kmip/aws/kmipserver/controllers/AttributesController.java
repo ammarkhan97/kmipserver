@@ -36,24 +36,15 @@ public class AttributesController {
 
     // //Used to get the attributes of an object
     @GetMapping("/getAttributes")
-    public String getAttributes(String[] attributes, String uid)
+    public String getAttributes(@RequestHeader String uid) throws InterruptedException, ExecutionException
     {
-        String returnVal;
-        if(true)
+        ManagedObject managedObject = firebaseService.getManagedObject(uid);
+        if(managedObject != null)
         {   
-            returnVal = "Attributes: ";
-            // for(true)
-            // {
-            //     if()
-            //     {
-            //         returnVal += "";
-            //     }
-            // }
-        } else
-        {
-            returnVal = "uid not found\n";
-        }
-        return returnVal;
+            return managedObject.getAttributesJson();
+        } 
+
+        return "Could not find object with uuid: " + uid;
     }
 
     //Used to add an attribute to an object
