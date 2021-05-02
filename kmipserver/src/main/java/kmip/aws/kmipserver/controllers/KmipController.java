@@ -1,17 +1,11 @@
 package kmip.aws.kmipserver.controllers;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.concurrent.ExecutionException;
 import com.amazonaws.services.kms.AWSKMS;
 import com.amazonaws.services.kms.model.CreateKeyRequest;
 import com.amazonaws.services.kms.model.CreateKeyResult;
-import com.amazonaws.services.kms.model.DecryptRequest;
-import com.amazonaws.services.kms.model.DecryptResult;
-import com.amazonaws.services.kms.model.EncryptRequest;
-import com.amazonaws.services.kms.model.EncryptResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import kmip.aws.kmipserver.KmsClientBuilder;
 import kmip.aws.kmipserver.objects.Attributes;
 import kmip.aws.kmipserver.objects.ManagedObject;
+import kmip.aws.kmipserver.services.EncryptionService;
 import kmip.aws.kmipserver.services.FirebaseService;
 
 @RestController
@@ -34,6 +29,7 @@ public class KmipController {
 
     private ArrayList<String> supportedAsymmetricTypes = new ArrayList<>(Arrays.asList("RSA_2048", "RSA_3072", "RSA_4096", "ECC_NIST_P256", "ECC_NIST_P384", "ECC_NIST_P521", "ECC_SECG_P256K1"));
     private AWSKMS kmsClient = new KmsClientBuilder().buildKmsClient();
+    private EncryptionService encryptionService = new EncryptionService();
 
     //Used to activate an object
     @PostMapping("/activate")
@@ -107,16 +103,8 @@ public class KmipController {
                           @RequestHeader String plaintext) throws InterruptedException, ExecutionException {
         
         ManagedObject managedObject = firebaseService.getManagedObject(uid);
-        EncryptRequest request = new EncryptRequest()
-                                    .withKeyId(managedObject.getAwsKeyId())
-                                    .withPlaintext(ByteBuffer.wrap(plaintext.getBytes()));
 
-        EncryptResult result = kmsClient.encrypt(request);
-
-        byte[] ciphertext = new byte[result.getCiphertextBlob().remaining()];
-        result.getCiphertextBlob().get(ciphertext);    
-
-        return Base64.getEncoder().encodeToString(ciphertext);
+        return encryptionService.symmetricEncrypt(managedObject, plaintext);
     }
 
     //Used for decrypting given data with given key
@@ -125,18 +113,8 @@ public class KmipController {
                           @RequestHeader String cipherText) throws InterruptedException, ExecutionException {
 
         ManagedObject managedObject = firebaseService.getManagedObject(uid);
-        byte[] cipherTextByteArray = Base64.getDecoder().decode(cipherText);
-
-        DecryptRequest decryptRequest = new DecryptRequest()
-                                            .withKeyId(managedObject.getAwsKeyId())
-                                            .withCiphertextBlob(ByteBuffer.wrap(cipherTextByteArray));
-                            
-        DecryptResult decryptResult = kmsClient.decrypt(decryptRequest);
-
-        byte[] plaintextByteArray = new byte[decryptResult.getPlaintext().remaining()];
-        decryptResult.getPlaintext().get(plaintextByteArray);                    
-
-        return new String(plaintextByteArray);
+        
+        return encryptionService.symmetricDecrypt(managedObject, cipherText);
     }
 
     //Used to destroy an object
