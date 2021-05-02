@@ -1,6 +1,7 @@
 package kmip.aws.kmipserver.controllers;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import kmip.aws.kmipserver.KmsClientBuilder;
+import kmip.aws.kmipserver.objects.Attributes;
 import kmip.aws.kmipserver.objects.ManagedObject;
 import kmip.aws.kmipserver.services.FirebaseService;
+
+import org.apache.commons.beanutils.BeanUtils;
 
 @RestController
 public class AttributesController {
@@ -26,6 +30,7 @@ public class AttributesController {
 
     private ArrayList<String> supportedAsymmetricTypes = new ArrayList<>(Arrays.asList("RSA_2048", "RSA_3072", "RSA_4096", "ECC_NIST_P256", "ECC_NIST_P384", "ECC_NIST_P521", "ECC_SECG_P256K1"));
     private AWSKMS kmsClient = new KmsClientBuilder().buildKmsClient();
+    private String couldNotFindUuid = "Could not find object with uuid: ";
 
     //Used to get the list of attributes of an object
     @GetMapping("/getAttributeList")
@@ -34,7 +39,7 @@ public class AttributesController {
         return firebaseService.getManagedObject(uid).getAttributes().listAttributes();
     }
 
-    // //Used to get the attributes of an object
+    //Used to get the attributes of an object
     @GetMapping("/getAttributes")
     public String getAttributes(@RequestHeader String uid) throws InterruptedException, ExecutionException
     {
@@ -44,22 +49,31 @@ public class AttributesController {
             return managedObject.getAttributesJson();
         } 
 
-        return "Could not find object with uuid: " + uid;
+        return couldNotFindUuid + uid;
     }
 
     //Used to add an attribute to an object
     @PostMapping("/addAttribute")
-    public String addAttribute(String uid, String attribute, String value)
+    public String addAttribute(@RequestHeader String uid, 
+                               @RequestHeader String attribute,
+                               @RequestHeader String value) throws InterruptedException, ExecutionException, IllegalAccessException, InvocationTargetException
     { 
-        String returnVal;
-        if(true)
+
+        ManagedObject managedObject = firebaseService.getManagedObject(uid);
+        if(managedObject != null)
         {
-            returnVal = "uid: "+ uid + "\n";
-        } else
-        {
-            returnVal = "uid not found\n";
+            Attributes attributes = managedObject.getAttributes();
+            if(attributes.listAttributes().contains(attribute)){
+                BeanUtils.setProperty(attributes, attribute, value);
+                managedObject.setAttributes(attributes);   
+                return firebaseService.saveManagedObject(managedObject);            
+            }
+
+            return "Attribute " + attribute + " not supported for object " + uid;
+
         }
-        return returnVal;
+
+        return couldNotFindUuid + uid;
     }
 
     //Used to delete an attribute
