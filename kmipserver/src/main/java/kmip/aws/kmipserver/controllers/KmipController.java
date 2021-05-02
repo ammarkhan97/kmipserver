@@ -103,8 +103,11 @@ public class KmipController {
                           @RequestHeader String plaintext) throws InterruptedException, ExecutionException {
         
         ManagedObject managedObject = firebaseService.getManagedObject(uid);
+        if(managedObject.getKeyType() == "Symmmetric"){
+            return encryptionService.symmetricEncrypt(managedObject, plaintext);
+        }
 
-        return encryptionService.symmetricEncrypt(managedObject, plaintext);
+        return encryptionService.asymmetricEncrypt(managedObject, plaintext);
     }
 
     //Used for decrypting given data with given key
@@ -113,8 +116,11 @@ public class KmipController {
                           @RequestHeader String cipherText) throws InterruptedException, ExecutionException {
 
         ManagedObject managedObject = firebaseService.getManagedObject(uid);
+        if(managedObject.getKeyType() == "Symmetric"){
+            return encryptionService.symmetricDecrypt(managedObject, cipherText);
+        }
         
-        return encryptionService.symmetricDecrypt(managedObject, cipherText);
+        return encryptionService.asymmetricDecrypt(managedObject, cipherText);
     }
 
     //Used to destroy an object

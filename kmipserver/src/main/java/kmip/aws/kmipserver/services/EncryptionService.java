@@ -45,4 +45,34 @@ public class EncryptionService {
 
     }
 
+    public String asymmetricEncrypt(ManagedObject managedObject, String plaintext){
+        EncryptRequest request = new EncryptRequest()
+                                    .withKeyId(managedObject.getAwsKeyId())
+                                    .withEncryptionAlgorithm("RSAES_OAEP_SHA_1")
+                                    .withPlaintext(ByteBuffer.wrap(plaintext.getBytes()));
+
+        EncryptResult result = kmsClient.encrypt(request);
+
+        byte[] ciphertext = new byte[result.getCiphertextBlob().remaining()];
+        result.getCiphertextBlob().get(ciphertext);    
+
+        return Base64.getEncoder().encodeToString(ciphertext);
+    }
+
+    public String asymmetricDecrypt(ManagedObject managedObject, String cipherText){
+        byte[] cipherTextByteArray = Base64.getDecoder().decode(cipherText);
+
+        DecryptRequest decryptRequest = new DecryptRequest()
+                                            .withKeyId(managedObject.getAwsKeyId())
+                                            .withEncryptionAlgorithm("RSAES_OAEP_SHA_1")
+                                            .withCiphertextBlob(ByteBuffer.wrap(cipherTextByteArray));
+                            
+        DecryptResult decryptResult = kmsClient.decrypt(decryptRequest);
+
+        byte[] plaintextByteArray = new byte[decryptResult.getPlaintext().remaining()];
+        decryptResult.getPlaintext().get(plaintextByteArray);                    
+
+        return new String(plaintextByteArray);
+
+    }
 }
