@@ -13,7 +13,6 @@ import com.amazonaws.services.kms.model.DecryptResult;
 import com.amazonaws.services.kms.model.EncryptRequest;
 import com.amazonaws.services.kms.model.EncryptResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializable.Base;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,9 +43,6 @@ public class KmipController {
         if(true)
         {
             returnVal = "uid: "+ uid + "\n";
-        } else
-        {
-            returnVal = "uid not found\n";
         }
         return returnVal;
     }
@@ -59,10 +55,7 @@ public class KmipController {
         if(true)
         {
             returnVal = "uid: "+ uid + "\n";
-        } else
-        {
-            returnVal = "uid not found\n";
-        }
+        } 
         return returnVal;
     }
 
@@ -152,10 +145,8 @@ public class KmipController {
         if(true)
         {
             returnVal = "uid: "+ uid + "\n";
-        } else
-        {
-            returnVal = "uid not found\n";
         }
+
         return returnVal;
     }
 
