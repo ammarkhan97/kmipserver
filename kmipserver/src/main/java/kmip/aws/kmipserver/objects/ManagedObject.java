@@ -1,9 +1,6 @@
 package kmip.aws.kmipserver.objects;
 
 import java.util.UUID;
-
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
-
 import org.springframework.stereotype.Component;
 
 @Component
