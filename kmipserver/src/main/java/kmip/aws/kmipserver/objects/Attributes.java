@@ -10,7 +10,7 @@ public class Attributes {
 
     private String alternativeName;
 
-    private boolean alwaysSensitive;
+    private Boolean alwaysSensitive;
 
     private String archiveDate;
 
@@ -24,7 +24,7 @@ public class Attributes {
 
     private String cryptographicAlgorithm;
 
-    private int cryptographicLength;
+    private Integer cryptographicLength;
 
     private String deactivationDate;
 
@@ -36,10 +36,10 @@ public class Attributes {
         super();
     }
 
-    public Attributes(String activationDate, String alternativeName, boolean alwaysSensitive,
+    public Attributes(String activationDate, String alternativeName, Boolean alwaysSensitive,
                       String archiveDate, String comment, String compromisedDate,
                       String compromisedOccurrenceDate, String contactInfo,
-                      String cryptographicAlgorithm, int cryptographicLength,
+                      String cryptographicAlgorithm, Integer cryptographicLength,
                       String deactivationDate, CryptographicUsageMask cryptographicUsageMask,
                       State state){
 
@@ -74,11 +74,11 @@ public class Attributes {
         this.alternativeName = alternativeName;
     }
 
-    public boolean getAlwaysSensitive(){
+    public Boolean getAlwaysSensitive(){
         return alwaysSensitive;
     }
 
-    public void setAlwaysSensitive(boolean alwaysSensitive){
+    public void setAlwaysSensitive(Boolean alwaysSensitive){
         this.alwaysSensitive = alwaysSensitive;
     }
 
@@ -130,11 +130,11 @@ public class Attributes {
         this.cryptographicAlgorithm = cryptographicAlgorithm;
     }
 
-    public int getCryptographicLength(){
+    public Integer getCryptographicLength(){
         return cryptographicLength;
     }
 
-    public void setCryptographicLength(int cryptographicLength){
+    public void setCryptographicLength(Integer cryptographicLength){
         this.cryptographicLength = cryptographicLength;
     }
 

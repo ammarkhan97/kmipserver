@@ -1,13 +1,20 @@
 package kmip.aws.kmipserver.controllers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import com.amazonaws.services.kms.AWSKMS;
 import com.amazonaws.services.kms.model.CreateKeyRequest;
 import com.amazonaws.services.kms.model.CreateKeyResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -135,27 +142,49 @@ public class KmipController {
     }
 
     //Used to locate objects with a given attribute
-    // @GetMapping("/locate")
-    // public String locate(String attribute)
-    // {
-    //     String returnVal = "uid(s): ";
-    //     for()
-    //     {
-    //         if()
-    //         {
-    //             if(returnVal.length() == 0)
-    //             {
-    //                 returnVal = "uid(s): ";
-    //             }
-    //             returnVal += uid + ", ";
-    //         }
-    //     }
-    //     if(returnVal.length() == 0)
-    //     {
-    //         returnVal = "None found\n";
-    //     }
-    //     return returnVal;
-    // }
+    @PostMapping("/locate")
+    public List<String> locate(@RequestBody Attributes attributes,
+                         @RequestHeader(required = false) Integer maxItems,
+                         @RequestHeader(required = false) Integer offsetItems,
+                         @RequestHeader(required = false) Integer storageMask,
+                         @RequestHeader(required = false) Integer objectGroupMember) throws InterruptedException, ExecutionException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
+    {
+        List<ManagedObject> managedObjects = firebaseService.getManagedObjects();
+        List<String> locatedObjectIds = new ArrayList<>();
+        Map targetAttributes = new Gson().fromJson(new Gson().toJson(attributes), Map.class);
+
+        for(ManagedObject managedObject: managedObjects){
+            //JsonObject objectAttributes = new Gson().toJsonTree(managedObject.getAttributes()).getAsJsonObject();  
+            Map objectAttributes = new Gson().fromJson(new Gson().toJson(managedObject.getAttributes()), Map.class);
+          
+            for(Object attribute: targetAttributes.keySet()){
+                if(objectAttributes.containsKey(attribute.toString())){
+                    String actualValue = objectAttributes.get(attribute.toString()).toString();
+                    if(targetAttributes.get(attribute.toString()).toString().equals(actualValue)){
+                        if(!locatedObjectIds.contains(managedObject.getId())){
+                            locatedObjectIds.add(managedObject.getId());
+                        }
+                    }else {
+                        if (locatedObjectIds.contains(managedObject.getId())){
+                            locatedObjectIds.remove(managedObject.getId());
+                        } 
+                        break;
+                    }
+                } else {
+                    if (locatedObjectIds.contains(managedObject.getId())){
+                        locatedObjectIds.remove(managedObject.getId());
+                    }   
+                    break;
+                }
+            }
+        }
+
+        if(maxItems != null){
+            locatedObjectIds = locatedObjectIds.subList(0, maxItems -1);
+        }
+
+        return locatedObjectIds;
+    }
 
     //Used to query the server capabilities
     @GetMapping("/query")

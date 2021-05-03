@@ -84,6 +84,10 @@ public class ManagedObject {
         
     }
 
+    public String getAttributesString(){
+        return new Gson().toJson(attributes);
+    }
+
     @Override
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder("{\n");
