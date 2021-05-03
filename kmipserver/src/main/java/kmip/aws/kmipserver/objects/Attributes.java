@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.digest.Crypt;
+
 public class Attributes {
 
     private String activationDate;
@@ -28,6 +30,8 @@ public class Attributes {
 
     private String deactivationDate;
 
+    private CryptographicUsageMask cryptographicUsageMask;
+
     private State state;
 
     public Attributes(){
@@ -38,7 +42,8 @@ public class Attributes {
                       String archiveDate, String comment, String compromisedDate,
                       String compromisedOccurrenceDate, String contactInfo,
                       String cryptographicAlgorithm, int cryptographicLength,
-                      String deactivationDate, State state){
+                      String deactivationDate, CryptographicUsageMask cryptographicUsageMask,
+                      State state){
 
         this.activationDate = activationDate;
         this.alternativeName = alternativeName;
@@ -51,6 +56,7 @@ public class Attributes {
         this.cryptographicAlgorithm = cryptographicAlgorithm;  
         this.cryptographicLength = cryptographicLength;  
         this.deactivationDate = deactivationDate;
+        this.cryptographicUsageMask = cryptographicUsageMask;
         this.state = state;     
     }
 
@@ -140,6 +146,14 @@ public class Attributes {
 
     public void setDeactivationDate(String deactivationDate){
         this.deactivationDate = deactivationDate;
+    }
+
+    public CryptographicUsageMask getCryptographicUsageMask(){
+        return cryptographicUsageMask;
+    }
+
+    public void setCryptographicUsageMask(CryptographicUsageMask cryptographicUsageMask){
+        this.cryptographicUsageMask = cryptographicUsageMask;
     }
 
     public State getState(){
