@@ -9,11 +9,6 @@ import java.util.concurrent.ExecutionException;
 import com.amazonaws.services.kms.AWSKMS;
 import com.amazonaws.services.kms.model.CreateKeyRequest;
 import com.amazonaws.services.kms.model.CreateKeyResult;
-import com.amazonaws.services.certificatemanager.AWSCertificateManagerClient;
-import com.amazonaws.services.certificatemanager.model.RequestCertificateRequest;
-import com.amazonaws.services.certificatemanager.model.RequestCertificateResult;
-import com.amazonaws.services.certificatemanager.model.RenewCertificateRequest;
-import com.amazonaws.services.certificatemanager.model.RenewCertificateResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 
@@ -39,27 +34,7 @@ public class KmipController {
 
     private ArrayList<String> supportedAsymmetricTypes = new ArrayList<>(Arrays.asList("RSA_2048", "RSA_3072", "RSA_4096", "ECC_NIST_P256", "ECC_NIST_P384", "ECC_NIST_P521", "ECC_SECG_P256K1"));
     private AWSKMS kmsClient = new KmsClientBuilder().buildKmsClient();
-    private AWSCertificateManager acmClient = new KmsClientBuilder().buildAcmClient();
     private EncryptionService encryptionService = new EncryptionService();
-
-    //Used to get a certificate
-    @PostMapping("/certify")
-    public String certify(@RequestHeader String domainName) throws InterruptedException, ExecutionException
-    {
-        String createCertificate = "Creating Certificate";
-
-        RequestCertificateRequest request = new RequestCertificateRequest()
-                                                    .withDomainName(domainName)
-                                                    .withValidationMethod("DNS");
-        RequestCertificateResult result = acmClient.requestCertificate(request);
-        
-        return firebaseService.saveManagedObject(new ManagedObject(
-            result.getCertificateArn(),
-            "",
-            "Certificate",
-            "US-East-2",
-            attributes));
-    }
 
     //Used to check if a user can use an object
     @GetMapping("/check")
@@ -214,27 +189,6 @@ public class KmipController {
     {
         String returnVal = "";
         return returnVal;
-    }
-
-    //Used to renew a certificate
-    @PostMapping("/recertify")
-    public String recertify(@RequestHeader String uid) throws InterruptedException, ExecutionException
-    {
-        ManagedObject managedObject = firebaseService.getManagedObject(uid);
-        if(managedObject = null)
-        {
-            return "No certificate with "+ uid +" found.\n";
-        } else if(!managedObject.getKeyType().equals("Certificate"))
-        {
-            return "Object "+ uid +" is not a certificate\n";
-        } else
-        {
-            String renewCertificate = "Renewing Certificate";
-            RenewCertificateRequest request = new RenewCertificateRequest()
-                                                    .withCertificateArn(managedObject.getAwsKeyArn());
-            RenewCertificateResult result = acmClient.renewCertificate(request);  
-        }
-        return uid;
     }
 
     //Used for registering externally generated key values on our server
