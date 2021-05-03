@@ -26,6 +26,8 @@ public class Attributes {
 
     private int cryptographicLength;
 
+    private State state;
+
     public Attributes(){
         super();
     }
@@ -33,7 +35,8 @@ public class Attributes {
     public Attributes(String activationDate, String alternativeName, boolean alwaysSensitive,
                       String archiveDate, String comment, String compromisedDate,
                       String compromisedOccurrenceDate, String contactInfo,
-                      String cryptographicAlgorithm, int cryptographicLength){
+                      String cryptographicAlgorithm, int cryptographicLength,
+                      State state){
 
         this.activationDate = activationDate;
         this.alternativeName = alternativeName;
@@ -44,7 +47,8 @@ public class Attributes {
         this.compromisedOccurrenceDate = compromisedOccurrenceDate;
         this.contactInfo = contactInfo;   
         this.cryptographicAlgorithm = cryptographicAlgorithm;  
-        this.cryptographicLength = cryptographicLength;       
+        this.cryptographicLength = cryptographicLength;  
+        this.state = state;     
     }
 
     public String getActivationDate(){
@@ -125,6 +129,14 @@ public class Attributes {
 
     public void setCryptographicLength(int cryptographicLength){
         this.cryptographicLength = cryptographicLength;
+    }
+
+    public State getState(){
+        return state;
+    }
+
+    public void setState(State state){
+        this.state = state;
     }
 
     public List<String> listAttributes(){

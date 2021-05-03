@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import kmip.aws.kmipserver.KmsClientBuilder;
 import kmip.aws.kmipserver.objects.Attributes;
 import kmip.aws.kmipserver.objects.ManagedObject;
+import kmip.aws.kmipserver.objects.State;
 import kmip.aws.kmipserver.services.EncryptionService;
 import kmip.aws.kmipserver.services.FirebaseService;
 
@@ -103,8 +104,12 @@ public class KmipController {
                           @RequestHeader String plaintext) throws InterruptedException, ExecutionException {
         
         ManagedObject managedObject = firebaseService.getManagedObject(uid);
-        if(managedObject.getKeyType() == "Symmmetric"){
-            return encryptionService.symmetricEncrypt(managedObject, plaintext);
+        if(managedObject.getKeyType().equals("Symmetric")){
+            if(managedObject.getAttributes().getState() == State.ACTIVE ){
+                return encryptionService.symmetricEncrypt(managedObject, plaintext);
+            }
+
+            return "Key is in a state " + managedObject.getAttributes().getState() + " and thus may not be used for cryptographic purposes";
         }
 
         return encryptionService.asymmetricEncrypt(managedObject, plaintext);
@@ -116,7 +121,7 @@ public class KmipController {
                           @RequestHeader String cipherText) throws InterruptedException, ExecutionException {
 
         ManagedObject managedObject = firebaseService.getManagedObject(uid);
-        if(managedObject.getKeyType() == "Symmetric"){
+        if(managedObject.getKeyType().equals("Symmetric")){
             return encryptionService.symmetricDecrypt(managedObject, cipherText);
         }
         
