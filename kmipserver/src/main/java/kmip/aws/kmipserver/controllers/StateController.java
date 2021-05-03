@@ -1,5 +1,7 @@
 package kmip.aws.kmipserver.controllers;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ public class StateController {
         ManagedObject managedObject = firebaseService.getManagedObject(uid);
         if(managedObject != null){
             managedObject.getAttributes().setState(State.ACTIVE);
+            LocalDate now = LocalDate.now();
+            managedObject.getAttributes().setActivationDate(now.toString());
             return firebaseService.saveManagedObject(managedObject);
         }
         return couldNotFindUuid + uid;
