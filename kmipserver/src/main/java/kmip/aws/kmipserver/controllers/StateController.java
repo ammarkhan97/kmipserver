@@ -1,7 +1,6 @@
 package kmip.aws.kmipserver.controllers;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import kmip.aws.kmipserver.objects.ManagedObject;
+import kmip.aws.kmipserver.objects.RevocationReason;
 import kmip.aws.kmipserver.objects.State;
 import kmip.aws.kmipserver.services.FirebaseService;
 
@@ -33,6 +33,34 @@ public class StateController {
             return firebaseService.saveManagedObject(managedObject);
         }
         return couldNotFindUuid + uid;
+    }
+
+    //Used to revoke an object
+    @PostMapping("/revoke")
+    public String revoke(@RequestHeader String uid,
+                         @RequestHeader RevocationReason reason,
+                         @RequestHeader (required = false) String compromisedOccurenceDate) throws InterruptedException, ExecutionException
+    {
+        ManagedObject managedObject = firebaseService.getManagedObject(uid);
+        if(managedObject != null){
+            if(reason == RevocationReason.CA_COMPROMISE || reason == RevocationReason.KEY_COMPROMISE){
+                managedObject.getAttributes().setState(State.COMPROMISED);
+                managedObject.getAttributes().setCompromisedDate(LocalDate.now().toString());
+                if(compromisedOccurenceDate == null || compromisedOccurenceDate.isEmpty()){
+                    managedObject.getAttributes().setCompromisedOccurrenceDate(LocalDate.now().toString());
+                } else {
+                    managedObject.getAttributes().setCompromisedOccurrenceDate(compromisedOccurenceDate);
+                }
+            } else {
+                managedObject.getAttributes().setState(State.DEACTIVATED);
+                managedObject.getAttributes().setDeactivationDate(LocalDate.now().toString());
+            } 
+
+            return firebaseService.saveManagedObject(managedObject);
+        }
+    
+        return couldNotFindUuid + uid;
+    
     }
 
     //Used to destroy an object

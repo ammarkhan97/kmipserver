@@ -26,6 +26,8 @@ public class Attributes {
 
     private int cryptographicLength;
 
+    private String deactivationDate;
+
     private State state;
 
     public Attributes(){
@@ -36,7 +38,7 @@ public class Attributes {
                       String archiveDate, String comment, String compromisedDate,
                       String compromisedOccurrenceDate, String contactInfo,
                       String cryptographicAlgorithm, int cryptographicLength,
-                      State state){
+                      String deactivationDate, State state){
 
         this.activationDate = activationDate;
         this.alternativeName = alternativeName;
@@ -48,6 +50,7 @@ public class Attributes {
         this.contactInfo = contactInfo;   
         this.cryptographicAlgorithm = cryptographicAlgorithm;  
         this.cryptographicLength = cryptographicLength;  
+        this.deactivationDate = deactivationDate;
         this.state = state;     
     }
 
@@ -129,6 +132,14 @@ public class Attributes {
 
     public void setCryptographicLength(int cryptographicLength){
         this.cryptographicLength = cryptographicLength;
+    }
+
+    public String getDeactivationDate(){
+        return deactivationDate;
+    }
+
+    public void setDeactivationDate(String deactivationDate){
+        this.deactivationDate = deactivationDate;
     }
 
     public State getState(){
