@@ -11,10 +11,7 @@ import com.amazonaws.services.kms.model.CreateKeyRequest;
 import com.amazonaws.services.kms.model.CreateKeyResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -151,11 +148,11 @@ public class KmipController {
     {
         List<ManagedObject> managedObjects = firebaseService.getManagedObjects();
         List<String> locatedObjectIds = new ArrayList<>();
-        Map targetAttributes = new Gson().fromJson(new Gson().toJson(attributes), Map.class);
+        var targetAttributes = new Gson().fromJson(new Gson().toJson(attributes), Map.class);
 
         for(ManagedObject managedObject: managedObjects){
             //JsonObject objectAttributes = new Gson().toJsonTree(managedObject.getAttributes()).getAsJsonObject();  
-            Map objectAttributes = new Gson().fromJson(new Gson().toJson(managedObject.getAttributes()), Map.class);
+            var objectAttributes = new Gson().fromJson(new Gson().toJson(managedObject.getAttributes()), Map.class);
           
             for(Object attribute: targetAttributes.keySet()){
                 if(objectAttributes.containsKey(attribute.toString())){
