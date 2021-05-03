@@ -32,18 +32,6 @@ public class KmipController {
     private AWSKMS kmsClient = new KmsClientBuilder().buildKmsClient();
     private EncryptionService encryptionService = new EncryptionService();
 
-    //Used to activate an object
-    @PostMapping("/activate")
-    public String activate(String uid)
-    {
-        String returnVal;
-        if(true)
-        {
-            returnVal = "uid: "+ uid + "\n";
-        }
-        return returnVal;
-    }
-
     //Used to check if a user can use an object
     @GetMapping("/check")
     public String check(String uid)
@@ -126,19 +114,6 @@ public class KmipController {
         }
         
         return encryptionService.asymmetricDecrypt(managedObject, cipherText);
-    }
-
-    //Used to destroy an object
-    @PostMapping("/destroy")
-    public String destroy(String uid)
-    {
-        String returnVal;
-        if(true)
-        {
-            returnVal = "uid: "+ uid + "\n";
-        }
-
-        return returnVal;
     }
 
     //Used to discover the KMIP version implemented
