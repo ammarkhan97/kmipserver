@@ -4,8 +4,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.codec.digest.Crypt;
-
 public class Attributes {
 
     private String activationDate;
